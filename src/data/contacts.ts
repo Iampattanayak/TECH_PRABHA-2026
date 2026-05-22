@@ -31,31 +31,15 @@ export interface TeamSection {
   members: ContactDetails[];
 }
 
-interface TeamCsvRow {
-  Name?: string;
-  Role?: string;
-  Dept?: string;
-  Email?: string;
-  Phone?: string;
-  Image?: string;
-}
-
-interface EventCoordinatorCsvRow {
-  EventName?: string;
-  Name?: string;
-  IsHead?: string;
-  Image?: string;
-}
-
 // Helper function to fetch and parse a generic team CSV
 async function fetchTeamData(url: string, categoryName: string): Promise<TeamSection> {
   if (!url || url.includes("YOUR_")) return { category: categoryName, members: [] };
   
   const res = await fetch(url, { next: { revalidate: 60 } });
   const csvText = await res.text();
-  const parsed = Papa.parse<TeamCsvRow>(csvText, { header: true, skipEmptyLines: true });
+  const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
   
-  const members = parsed.data.map((row) => {
+  const members = (parsed.data as any[]).map(row => {
     // Determine the role
     let assignedRole = row.Role || "";
     
@@ -97,29 +81,26 @@ export async function getEventCoordinators(): Promise<EventCoordinatorInfo[]> {
 
   const res = await fetch(URLS.EVENTS, { next: { revalidate: 60 } });
   const csvText = await res.text();
-  const parsed = Papa.parse<EventCoordinatorCsvRow>(csvText, { header: true, skipEmptyLines: true });
+  const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
   
   const grouped: Record<string, { heads: ContactDetails[], others: ContactDetails[] }> = {};
 
-  parsed.data.forEach((row) => {
-    const eventName = row.EventName?.trim();
-    if (!eventName) return;
-
-    if (!grouped[eventName]) {
-      grouped[eventName] = { heads: [], others: [] };
+  (parsed.data as any[]).forEach(row => {
+    if (!grouped[row.EventName]) {
+      grouped[row.EventName] = { heads: [], others: [] };
     }
     
     const isHead = row.IsHead?.toLowerCase() === 'true';
     const memberObj: ContactDetails = {
-      name: row.Name || "Unknown",
+      name: row.Name,
       role: isHead ? "Head Coordinator" : "",
       image: row.Image || ""
     };
     
     if (isHead) {
-      grouped[eventName].heads.push(memberObj);
+      grouped[row.EventName].heads.push(memberObj);
     } else {
-      grouped[eventName].others.push(memberObj);
+      grouped[row.EventName].others.push(memberObj);
     }
   });
 

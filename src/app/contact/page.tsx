@@ -67,46 +67,8 @@ export default async function ContactPage() {
     getEventCoordinators()
   ]);
 
-  // Apply name replacements and removals per request:
-  // - Replace Akash Pattanayak (when a LEAD ORGANISER) with Dipam Pandit as LEAD ORGANISER
-  // - Replace Dipam Pandit (when a LEAD ORGANISER) with Vicky Kumar Shah as LEAD ORGANISER
-  // - Remove any other mentions of Akash Pattanayak completely
-  const normalize = (s?: string) => (s || "").trim().toUpperCase();
-
-  const transformedTeams = allTeams.map(team => {
-    const members = team.members.flatMap(member => {
-      const nameU = normalize(member.name);
-      const roleU = normalize(member.role);
-
-      if (nameU === "AKASH PATTANAYAK") {
-        // If Akash was listed as a lead organiser, replace with Dipam as LEAD ORGANISER
-        if (roleU.includes("LEAD")) {
-          return [{ ...member, name: "DIPAM PANDIT", role: "LEAD ORGANISER" }];
-        }
-        // Otherwise remove Akash entirely
-        return [];
-      }
-
-      if (nameU === "DIPAM PANDIT" && roleU.includes("LEAD")) {
-        // Replace Dipam as lead with Vicky
-        return [{ ...member, name: "VICKY KUMAR SHAH", role: "LEAD ORGANISER" }];
-      }
-
-      return [member];
-    });
-
-    return { ...team, members };
-  });
-
-  // Remove Akash from event coordinators (heads and others)
-  const transformedEventCoordinators = eventCoordinators.map(ev => ({
-    ...ev,
-    heads: ev.heads.filter(h => normalize(h.name) !== "AKASH PATTANAYAK"),
-    others: ev.others.filter(o => normalize(o.name) !== "AKASH PATTANAYAK")
-  }));
-
-  const managementTeam = transformedTeams.find(t => t.category === "MANAGEMENT TEAM");
-  const otherTeams = transformedTeams.filter(t => t.category !== "MANAGEMENT TEAM");
+  const managementTeam = allTeams.find(t => t.category === "MANAGEMENT TEAM");
+  const otherTeams = allTeams.filter(t => t.category !== "MANAGEMENT TEAM");
 
   return (
     <PageLayout title="CONTACT" subtitle="Meet the Organizers">
@@ -185,14 +147,14 @@ export default async function ContactPage() {
         })}
 
         {/* --- 3. EVENT COORDINATORS --- */}
-        {transformedEventCoordinators.length > 0 && (
+        {eventCoordinators.length > 0 && (
           <div className="flex flex-col items-center w-full mt-12">
             <h2 className="text-3xl md:text-5xl font-black text-white text-center mb-16 tracking-widest uppercase" style={{ textShadow: '0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(0,240,255,0.6)' }}>
               EVENT COORDINATORS
             </h2>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 flex-col gap-10">
-              {transformedEventCoordinators.map((event, eIdx) => (
+              {eventCoordinators.map((event, eIdx) => (
                 <div key={eIdx} className="w-full relative bg-[#0a0a0c] border border-[#7000ff]/50 p-6 md:p-8 rounded-2xl shadow-[0_0_20px_rgba(112,0,255,0.1)]">
                   
                   <h3 className="text-2xl md:text-2xl font-black text-white mb-6 uppercase tracking-wider border-b border-gray-800 pb-4 flex items-center gap-4">

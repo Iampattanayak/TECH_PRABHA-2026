@@ -20,7 +20,7 @@ export default function Countdown() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const mountedTimer = window.setTimeout(() => setIsMounted(true), 0);
+    setIsMounted(true);
 
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -39,10 +39,7 @@ export default function Countdown() {
       }
     }, 1000);
 
-    return () => {
-      window.clearTimeout(mountedTimer);
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [TARGET_DATE]);
 
   // Prevent hydration mismatch by not rendering the numbers until the client mounts
