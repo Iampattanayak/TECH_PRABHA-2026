@@ -24,15 +24,19 @@ export default function PageLayout({ title, subtitle, children }: PageLayoutProp
 
   // 2. Run the WebGL check AFTER the component has safely mounted on the client
   useEffect(() => {
-    try {
-      const canvas = document.createElement("canvas");
-      const hasWebGL = Boolean(
-        canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
-      );
-      setCanRenderCanvas(hasWebGL);
-    } catch {
-      setCanRenderCanvas(false);
-    }
+    const timer = window.setTimeout(() => {
+      try {
+        const canvas = document.createElement("canvas");
+        const hasWebGL = Boolean(
+          canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
+        );
+        setCanRenderCanvas(hasWebGL);
+      } catch {
+        setCanRenderCanvas(false);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   return (

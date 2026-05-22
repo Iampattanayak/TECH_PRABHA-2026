@@ -1,7 +1,7 @@
 import PageLayout from "@/components/PageLayout";
 import { events } from "@/data/events";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, MapPin, Share2 } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import RegisterButton from "@/components/RegisterButton";
 

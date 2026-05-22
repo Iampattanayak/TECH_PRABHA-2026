@@ -9,10 +9,9 @@ const syncopate = Syncopate({ subsets: ["latin"], weight: ["400", "700"] });
 
 interface Props {
   event: EventDetails;
-  onRegisterClick?: () => void; // <-- 1. Add this prop
 }
 
-export default function SciFiEventCard({ event, onRegisterClick }: Props) {
+export default function SciFiEventCard({ event }: Props) {
   const clipShape = 'polygon(44px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 44px 100%, 24px calc(100% - 20px), 24px 55%, 8px 55%, 0 calc(55% - 8px), 0 calc(20% + 8px), 8px 20%, 24px 20%, 24px 20px)';
 
   const gradientStyle = {

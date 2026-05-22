@@ -24,15 +24,19 @@ export default function HeroSection() {
   const [canRenderCanvas, setCanRenderCanvas] = useState(false);
 
   useEffect(() => {
-    try {
-      const canvas = document.createElement("canvas");
-      const hasWebGL = Boolean(
-        canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
-      );
-      setCanRenderCanvas(hasWebGL);
-    } catch {
-      setCanRenderCanvas(false);
-    }
+    const timer = window.setTimeout(() => {
+      try {
+        const canvas = document.createElement("canvas");
+        const hasWebGL = Boolean(
+          canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
+        );
+        setCanRenderCanvas(hasWebGL);
+      } catch {
+        setCanRenderCanvas(false);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   return (
@@ -108,7 +112,7 @@ export default function HeroSection() {
           <p
             className={`${inter.className} mt-8 text-sm md:text-xl lg:text-2xl text-gray-400 font-light tracking-[0.3em] md:tracking-[0.5em] uppercase text-center max-w-2xl`}
           >
-            GKCIET's {""}
+            GKCIET&apos;s{" "}
             <span className="text-[#00f0ff] font-semibold drop-shadow-[0_0_10px_rgba(0,240,255,0.6)]">TechFest</span>
           </p>
         </motion.div>
